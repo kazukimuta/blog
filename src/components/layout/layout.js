@@ -5,7 +5,7 @@ import { StaticQuery, graphql } from 'gatsby'
 import RootHeader from '../header/rootHeader'
 import PageHeader from '../header/pageHeader'
 import Footer from '../footer/index'
-import Config from '../../config/config'
+
 
 const Layout = ({ frontmatter, isRoot, children }) => (
   <StaticQuery
