@@ -1,0 +1,85 @@
+.blog-post-content {
+  font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-kerning: auto;
+  font-variant-ligatures: none;
+  letter-spacing: 0.05rem;
+  line-height: 1.75;
+}
+
+.blog-post-content h1,
+.blog-post-content h2,
+.blog-post-content h3,
+.blog-post-content h4,
+.blog-post-content h5,
+.blog-post-content h6 {
+  margin-top: 3.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.blog-post-content h1,
+.blog-post-content h2,
+.blog-post-content h3 {
+  border-bottom: 1px solid #ddd;
+}
+
+.blog-post-content a {
+  color: #0085a1;
+  text-decoration: none;
+}
+
+.blog-post-content a:focus,
+.blog-post-content a:hover {
+  color: #9b4dca;
+}
+
+.blog-post-content table {
+  border-spacing: 0;
+  width: 100%;
+}
+
+.blog-post-content td,
+.blog-post-content th {
+  border-bottom: 0.05rem solid #e1e1e1;
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+
+.blog-post-content td:first-child,
+.blog-post-content th:first-child {
+  padding-left: 0;
+}
+
+.blog-post-content td:last-child,
+.blog-post-content th:last-child {
+  padding-right: 0;
+}
+
+.blog-post-content dl,
+.blog-post-content ol,
+.blog-post-content ul {
+  list-style: none;
+  margin-top: 0;
+  padding-left: 1rem;
+  margin-bottom: 0.01rem;
+}
+
+.blog-post-content dl dl,
+.blog-post-content dl ol,
+.blog-post-content dl ul,
+.blog-post-content ol dl,
+.blog-post-content ol ol,
+.blog-post-content ol ul,
+.blog-post-content ul dl,
+.blog-post-content ul ol,
+.blog-post-content ul ul {
+  font-size: 90%;
+  margin: 1rem 0.5rem 1rem 3rem;
+}
+
+.blog-post-content ol {
+  list-style: decimal;
+}
+
+.blog-post-content ul {
+  list-style: circle;
+}
