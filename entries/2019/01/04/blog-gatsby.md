@@ -1,6 +1,7 @@
 ---
 path: '/blog/2019/01/04/blog-gatsby'
 date: '2019-01-04'
+type: 'blog'
 title: 'GatsyJSでブログをはじめました'
 keyword: ''
 ---
