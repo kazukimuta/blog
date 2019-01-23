@@ -87,7 +87,7 @@ type: 'book'
 path: '/blog/$subDir/$fileName'
 date: '$(date '+%Y-%m-%d')'
 title: '[読書記録]$postTitle'
-amazonAff: ''
+amazonaff: ''
 keyword: ''
 ---
 
