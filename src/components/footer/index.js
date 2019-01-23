@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <p className="wrap-icon">
-        <a href={Config.githubPage} rel="nofollow noopener" target="_blank">
+        <a href={Config.githubPage} rel="noopener noreferrer" target="_blank">
           <FontAwesomeIcon
             color="#333"
             size="2x"

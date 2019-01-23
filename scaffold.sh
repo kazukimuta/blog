@@ -17,10 +17,12 @@ EOF
 # ===================================================
 fileName=""
 postTitle=""
+isBookPost=false
 
 COLOR_ESC="\e["
 COLOR_ESC_END="m"
 COLOR_RED=${COLOR_ESC}31${COLOR_ESC_END}
+COLOR_YELLO=${COLOR_ESC}33${COLOR_ESC_END}
 COLOR_BLUE=${COLOR_ESC}34${COLOR_ESC_END}
 COLOR_OFF=${COLOR_ESC}${COLOR_ESC_END}
 # ===================================================
@@ -31,6 +33,18 @@ function printError() {
 }
 function printSuccess() {
     printf "${COLOR_BLUE}Success${COLOR_OFF} $1\n\n"
+}
+function printInfo() {
+    printf "${COLOR_YELLO}Info${COLOR_OFF} $1\n"
+}
+
+function setIsBookPost() {
+    read -p "書籍レビュー記事?(y/n) : " input
+
+    if [[ $input =~ ^y|Y ]] ; then
+        printInfo "書籍レビュー"
+        isBookPost=true
+    fi    
 }
 
 function setFilename() {
@@ -64,8 +78,25 @@ function createFile() {
     if [ ! -e $dir ]; then
         mkdir -p $dir
     fi
+
+    if $isBookPost; then
+    # 書籍記事
     tee $file <<EOF
 ---
+type: 'book'
+path: '/blog/$subDir/$fileName'
+date: '$(date '+%Y-%m-%d')'
+title: '[読書記録]$postTitle'
+amazonaff: ''
+keyword: ''
+---
+
+EOF
+    else
+    # 一般ブログ記事
+    tee $file <<EOF
+---
+type: 'blog'
 path: '/blog/$subDir/$fileName'
 date: '$(date '+%Y-%m-%d')'
 title: '$postTitle'
@@ -73,11 +104,13 @@ keyword: ''
 ---
 
 EOF
+    fi
 
     printSuccess "Create $file"
 }
 
 function main() {
+    setIsBookPost
     setFilename
     setTitle
     createFile

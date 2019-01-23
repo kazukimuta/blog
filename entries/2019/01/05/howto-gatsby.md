@@ -1,6 +1,7 @@
 ---
 path: '/blog/2019/01/05/howto-gatsby'
 date: '2019-01-05'
+type: 'blog'
 title: 'GatsbyJS + markdown + Netlifyでブログ開設するまでのまとめ'
 keyword: ''
 ---
