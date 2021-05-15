@@ -12,10 +12,10 @@ const Header = ({children}) => (
             <a className="brand" href="/">{config.blogTitle}</a>
           </div>
           <div className="menu-item flex">
-            <a href="/blog">Blog</a>
-            <a href="/me">About</a>
-            <a href="/me">Contact</a>
-            <a href="/me">
+            <a href="/">Blog</a>
+            <a href="/">About</a>
+            <a href="/">Contact</a>
+            <a href="/">
               <FontAwesomeIcon
                 color="#333"
                 size="1x"
@@ -23,7 +23,7 @@ const Header = ({children}) => (
                 className="icon"
               />
             </a>
-            <a>
+            <a href="/">
               <FontAwesomeIcon
                 color="#333"
                 size="1x"

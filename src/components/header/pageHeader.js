@@ -1,7 +1,6 @@
-import { Link } from 'gatsby'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Confing from '../../config/config'
+
 
 const Header = ({ frontmatter }) => (
     <div className="article-header">

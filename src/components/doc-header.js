@@ -65,10 +65,6 @@ function DocHeader({ description, lang, meta, keywords, title }) {
               rel="stylesheet"
               href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css"
             />
-            <link
-              href="https://fonts.googleapis.com/css?family=Lora:400i|Roboto:300,300italic,700,700italic|Monoton"
-              rel="stylesheet"
-            />
           </Helmet>
         )
       }}
