@@ -1,13 +1,41 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTwitter, faGithubSquare } from '@fortawesome/free-brands-svg-icons'
 import config from '../../config/config'
-import './header.css'
 
-const Header = () => (
-  <div className="header">
-    <div className="site-heading">
-      <h1 className="blog-title">{config.blogTitle}</h1>
-      <span className="subheading">{config.blogDescription}</span>
-    </div>
+const Header = ({children}) => (
+  <div>
+    <nav className="navbar">
+      <div className="container">
+        <div className="grid">
+          <div>
+            <a className="brand" href="/">{config.blogTitle}</a>
+          </div>
+          <div className="menu-item flex">
+            <a href="/blog">Blog</a>
+            <a href="/me">About</a>
+            <a href="/me">Contact</a>
+            <a href="/me">
+              <FontAwesomeIcon
+                color="#333"
+                size="1x"
+                icon={faTwitter}
+                className="icon"
+              />
+            </a>
+            <a>
+              <FontAwesomeIcon
+                color="#333"
+                size="1x"
+                icon={faGithubSquare}
+                className="icon"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    {children}
   </div>
 )
 
