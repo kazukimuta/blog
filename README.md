@@ -5,3 +5,12 @@ https://kazukimuta.netlify.com/
 
 - [Gatsby](https://www.gatsbyjs.org/)
 - [netlify](https://www.netlify.com/)
+
+## TODO
+
+- [ ] Twitter リンク
+- [ ] Github リンク
+- [ ] GA 導入
+- [ ] About ページ
+- [ ] Contact ページ
+- [ ] ブログにラベルつける.ラベルでメニューわけ

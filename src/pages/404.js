@@ -5,7 +5,7 @@ import DocHeader from '../components/doc-header'
 const NotFoundPage = () => (
   <Layout isRoot>
     <DocHeader title="404: Not found" />
-    <h1>404</h1>
+    <h1>Under construction</h1>
   </Layout>
 )
 

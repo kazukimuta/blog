@@ -5,7 +5,7 @@ import { StaticQuery, graphql } from 'gatsby'
 import RootHeader from '../header/rootHeader'
 import PageHeader from '../header/pageHeader'
 import Footer from '../footer/index'
-
+import './style.css'
 
 const Layout = ({ frontmatter, isRoot, children }) => (
   <StaticQuery
@@ -20,18 +20,15 @@ const Layout = ({ frontmatter, isRoot, children }) => (
     `}
     render={data => (
       <>
-        {isRoot ? <RootHeader /> : <PageHeader frontmatter={frontmatter} />}
-        <div
-          style={{
-            margin: `0 auto`,
-            maxWidth: 760,
-            padding: `0px 1rem 1rem`,
-            paddingTop: 0,
-          }}
-        >
-          {children}
-          <Footer />
-        </div>
+        <RootHeader>
+          {!isRoot ? <PageHeader frontmatter={frontmatter}/> : ""}
+        </RootHeader>
+        <main>
+          <div className="container">
+            {children}
+            <Footer />
+          </div>
+        </main>
       </>
     )}
   />

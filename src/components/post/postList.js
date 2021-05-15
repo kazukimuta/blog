@@ -6,7 +6,10 @@ const PostList = ({ posts }) => {
   const postLinks = posts.map(post => (
     <PostLink key={post.node.id} post={post.node} />
   ))
-  return <div className="post-wrap">{postLinks}</div>
+  return (
+  <div className="post-wrap">
+    {postLinks}
+  </div>)
 }
 
 PostList.propTypes = {
