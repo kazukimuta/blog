@@ -7,7 +7,7 @@ function DocHeader({ description, lang, meta, keywords, title }) {
   return (
     <StaticQuery
       query={detailsQuery}
-      render={data => {
+      render={(data) => {
         const metaDescription =
           description || data.site.siteMetadata.description
         return (
@@ -64,6 +64,11 @@ function DocHeader({ description, lang, meta, keywords, title }) {
             <link
               rel="stylesheet"
               href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css"
+            />
+            <link rel="preconnect" href="https://fonts.gstatic.com" />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap"
+              rel="stylesheet"
             />
           </Helmet>
         )

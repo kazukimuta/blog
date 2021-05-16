@@ -3,19 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTwitter, faGithubSquare } from '@fortawesome/free-brands-svg-icons'
 import config from '../../config/config'
 
-const Header = ({children}) => (
+const Header = ({ children }) => (
   <div>
     <nav className="navbar">
       <div className="container">
         <div className="grid">
           <div>
-            <a className="brand" href="/">{config.blogTitle}</a>
+            <a className="brand" href="/">
+              {config.blogTitle}
+            </a>
           </div>
           <div className="menu-item flex">
             <a href="/">Blog</a>
             <a href="/">About</a>
             <a href="/">Contact</a>
-            <a href="/">
+            <a href={config.twitter}>
               <FontAwesomeIcon
                 color="#333"
                 size="1x"
@@ -23,7 +25,7 @@ const Header = ({children}) => (
                 className="icon"
               />
             </a>
-            <a href="/">
+            <a href={config.github}>
               <FontAwesomeIcon
                 color="#333"
                 size="1x"
