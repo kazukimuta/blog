@@ -18,7 +18,9 @@ export default function Template({ data }) {
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
-  const affLink = !frontmatter.amazonaff ? '' : (
+  const affLink = !frontmatter.amazonaff ? (
+    ''
+  ) : (
     <div
       className="book-aff-link"
       dangerouslySetInnerHTML={{ __html: frontmatter.amazonaff }}
@@ -38,7 +40,7 @@ export default function Template({ data }) {
 }
 
 export const pageQuery = graphql`
-  query($path: String!) {
+  query ($path: String!) {
     markdownRemark(frontmatter: { path: { eq: $path } }) {
       html
       frontmatter {
@@ -47,6 +49,7 @@ export const pageQuery = graphql`
         title
         amazonaff
         keyword
+        tags
       }
     }
   }

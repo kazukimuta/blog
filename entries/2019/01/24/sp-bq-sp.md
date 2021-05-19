@@ -4,6 +4,7 @@ path: '/blog/2019/01/24/sp-bq-sp'
 date: '2019-01-24'
 title: 'スプレッドシートを外部テーブルとして連携したBigQueryに、スプレッドシート+GASからアクセスする'
 keyword: 'bigQuery,google spread sheet,GAS'
+tags: ["programming"]
 ---
 
 社内の諸々のデータを可視化する目的で、BigQueryにデータを蓄積し、Google SpreadSheetで直接可視化できるようにする営みを進めている。
