@@ -4,6 +4,7 @@ path: '/blog/2021/05/16/try_clean_architecture'
 date: '2021-05-16'
 title: 'Clean ArchitectureをTypeScriptで実装し、DBを入れ替えてみる'
 keyword: ''
+tags: ["programming","architecture"]
 ---
 
 <!-- TOC -->

@@ -179,11 +179,18 @@ a {
 .post-title {
   font-weight: 900;
 }
-
 .post-meta {
   font-size: 0.75rem;
   flex: 0 0 55px;
   color: var(--light-font-color);
+}
+.post-tag {
+  padding: 0.5em 1em;
+  margin: 0.5em 0.5em 0.5em 0;
+  color: var(--light-font-color);
+  border: solid 1px var(--light-font-color);
+  border-radius: 10px;
+  font-size: 0.8em;
 }
 @media screen and (min-width: 800px) {
   .post-row {

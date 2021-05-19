@@ -4,6 +4,7 @@ path: '/blog/2021/05/15/restart-gatsby'
 date: '2021-05-15'
 title: 'かれこれ２年ぶりにGatsbyブログを整理した'
 keyword: 'Gatsby'
+tags: ["blog","gatsby"]
 ---
 
 定期的にアウトプットしたいなと思い、一度つくったっきりそのままにしてしまっていたブログを再開することにした。

@@ -5,6 +5,7 @@ date: '2019-01-20'
 title: '[読書記録]ザ・ゴール 企業の究極の目的とは何か'
 amazonaff: ''
 keyword: ''
+tags: ["book"]
 ---
 
 |読んだ本| 

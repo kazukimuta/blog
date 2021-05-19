@@ -4,6 +4,7 @@ date: '2019-01-05'
 type: 'blog'
 title: 'GatsbyJS + markdown + Netlifyでブログ開設するまでのまとめ'
 keyword: ''
+tags: ["programming","gatsby"]
 ---
 
 おおまかには以下の通り

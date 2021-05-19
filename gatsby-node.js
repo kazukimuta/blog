@@ -25,12 +25,13 @@ exports.createPages = ({ actions, graphql }) => {
             frontmatter {
               path
               type
+              tags
             }
           }
         }
       }
     }
-  `).then(result => {
+  `).then((result) => {
     if (result.errors) {
       return Promise.reject(result.errors)
     }
@@ -38,7 +39,8 @@ exports.createPages = ({ actions, graphql }) => {
     result.data.allMarkdownRemark.edges.forEach(({ node }) => {
       createPage({
         path: node.frontmatter.path,
-        component: node.frontmatter.type == 'book' ? bookTemplate : blogPostTemplate,
+        component:
+          node.frontmatter.type == 'book' ? bookTemplate : blogPostTemplate,
         context: {}, // additional data can be passed via context
       })
     })

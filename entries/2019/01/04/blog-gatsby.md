@@ -2,8 +2,9 @@
 path: '/blog/2019/01/04/blog-gatsby'
 date: '2019-01-04'
 type: 'blog'
-title: 'GatsyJSでブログをはじめました'
+title: 'GatsbyJSでブログをはじめました'
 keyword: ''
+tags: ["blog","gatsby"]
 ---
 
 [GatsbyJS](https://www.gatsbyjs.org/)を使って、ブログを始めることにした。
