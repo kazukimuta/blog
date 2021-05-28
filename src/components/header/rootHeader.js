@@ -14,9 +14,9 @@ const Header = ({ children }) => (
             </a>
           </div>
           <div className="menu-item flex">
-            <a href="/">Blog</a>
-            <a href="/">About</a>
-            <a href="/">Contact</a>
+            {/* <a href="/">Blog</a> */}
+            <a href="/about">About</a>
+            {/* <a href="/">Contact</a> */}
             <a href={config.twitter}>
               <FontAwesomeIcon
                 color="#333"
