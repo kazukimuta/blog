@@ -83,3 +83,8 @@
 .blog-post-content ul {
   list-style: circle;
 }
+
+.blog-post-content .about-twitter svg {
+  font-size: 3rem;
+  color: rgba(29, 161, 242, 1);
+}

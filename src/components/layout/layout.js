@@ -4,36 +4,44 @@ import { StaticQuery, graphql } from 'gatsby'
 
 import RootHeader from '../header/rootHeader'
 import PageHeader from '../header/pageHeader'
+import AboutHeader from '../header/aboutHeader'
 import Footer from '../footer/index'
 import '../../style/global.css'
 
-
-const Layout = ({ frontmatter, isRoot, children }) => (
-  <StaticQuery
-    query={graphql`
-      query SiteTitleQuery {
-        site {
-          siteMetadata {
-            title
+const Layout = ({ frontmatter, isRoot, children }) => {
+  let docHeader = ''
+  if (isRoot) {
+    docHeader = ''
+  } else if (frontmatter.type === 'page') {
+    docHeader = <AboutHeader frontmatter={frontmatter} />
+  } else {
+    docHeader = <PageHeader frontmatter={frontmatter} />
+  }
+  return (
+    <StaticQuery
+      query={graphql`
+        query SiteTitleQuery {
+          site {
+            siteMetadata {
+              title
+            }
           }
         }
-      }
-    `}
-    render={data => (
-      <>
-        <RootHeader>
-          {!isRoot ? <PageHeader frontmatter={frontmatter}/> : ""}
-        </RootHeader>
-        <main>
-          <div className="container">
-            {children}
-            <Footer />
-          </div>
-        </main>
-      </>
-    )}
-  />
-)
+      `}
+      render={(data) => (
+        <>
+          <RootHeader>{docHeader}</RootHeader>
+          <main>
+            <div className="container">
+              {children}
+              <Footer />
+            </div>
+          </main>
+        </>
+      )}
+    />
+  )
+}
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
