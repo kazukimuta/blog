@@ -2,88 +2,54 @@
 type: 'blog'
 path: '/blog/2021/05/27/cleanarch_dicontainer'
 date: '2021-05-27'
-title: 'Clean ArchitectureにDIコンテナを導入し、オブジェクト生成を整理する'
+title: 'DIの悩みをDIコンテナで解決する ~TypeScriptのCleanArchitectureにDIコンテナを適用してみる~'
 keyword: ''
 tags: ["programming", "architetcure"]
 ---
 
-[先日のClean Architetcure実装](/blog/2021/05/16/try_clean_architecture)では、ライブラリを利用せずに素のDIの設計パターンで実装しました。
+[以前の記事](/blog/2021/05/16/try_clean_architecture)で、Clean Architetcureにしたがってサンプルのサーバーを作ってみました。
+このサンプル実装はDIコンテナを使わずに実装しましたが、DIコンテナを使うことで、具体的にどのようにDIの実装が変化するかを確認します。
 
-今回は、 __DIコンテナ__ を利用した実装を確認します。
+本記事では、[タスク管理システムのサーバーサイドをイメージしたTypeScript + Expressのサーバー実装](https://github.com/kazukimuta/try_crean_architecture)をサンプルとしています。
 
+なお、本記事ではDIとDIコンテナにフォーカスし、Clean Architectureについての説明はしません。
 
-<a id="markdown-目次" name="目次"></a>
-# 目次
 <!-- TOC -->
 
-- [目次](#目次)
-- [ベースにするClean Architecture実装](#ベースにするclean-architecture実装)
-  - [フォルダ構成](#フォルダ構成)
-  - [素DI実装のオブジェクトの生成](#素di実装のオブジェクトの生成)
-- [DIコンテナについて](#diコンテナについて)
-  - [InversifyJSについて](#inversifyjsについて)
+- [DIとDIコンテナ](#diとdiコンテナ)
+  - [DIの基本形](#diの基本形)
+  - [DIの悩み](#diの悩み)
+    - [内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち](#内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち)
+    - [オブジェクト生成する場所が不明確になりがち](#オブジェクト生成する場所が不明確になりがち)
+  - [DIコンテナとはなにか](#diコンテナとはなにか)
+    - [InversifyJS](#inversifyjs)
+- [Clean Architecture実装にDIコンテナを導入する](#clean-architecture実装にdiコンテナを導入する)
   - [DIコンテナを導入する](#diコンテナを導入する)
     - [デコレータを付与する](#デコレータを付与する)
     - [DIコンテナにオブジェクトを登録する](#diコンテナにオブジェクトを登録する)
     - [DIコンテナからオブジェクトを生成する](#diコンテナからオブジェクトを生成する)
-  - [Service Locatorアンチパターンについて](#service-locatorアンチパターンについて)
 - [まとめ](#まとめ)
 
 <!-- /TOC -->
 
 
-<a id="markdown-ベースにするclean-architecture実装" name="ベースにするclean-architecture実装"></a>
-# ベースにするClean Architecture実装
 
-実装は[こちら](https://github.com/kazukimuta/try_crean_architecture)。
 
-タスク管理システムのサーバーサイドをイメージした、TypeScript + Expressのサーバー実装です。
+<a id="markdown-diとdiコンテナ" name="diとdiコンテナ"></a>
+# DIとDIコンテナ
+<a id="markdown-diの基本形" name="diの基本形"></a>
+## DIの基本形
+- 依存する対象を実態ではなくインターフェースにする
+- インターフェースを実装した依存オブジェクトをつくり、外側からわたす
 
-<a id="markdown-フォルダ構成" name="フォルダ構成"></a>
-## フォルダ構成
+のが基本的なDIの考え方です。
 
-フォルダ構成は以下の通り。
+以下の例では
 
-- Clean Architectureの指針に沿った責務でフォルダ分け
-- Interfaceは、一つ前の層に置く
-  - 例えば、2層のモジュールが依存するInterfaceは２層に置くが、その実態は３層以降に定義するイメージ
+- `TaskController`は`IDatabase`インターフェースに依存している(実態に依存していない)
+- `IDatabase`を継承した`Database`を外側で作り、`TaskController`にわたす
 
-```bash
- tree -I "*test*" ./src  
-./src
-├── application                   # Application Business Rule層（２層目）
-│   ├── repositories
-│   │   └── ITaskRepository.ts      # Database操作のInterface
-│   └── usecases                    # タスクモデル操作に関連するユースケース
-│       ├── CreateTask.ts
-│       ├── DeleteTask.ts
-│       ├── GetTask.ts
-│       ├── ListTask.ts
-│       └── UpdateTask.ts
-├── domain                        # Enterprise Business Rule層（１層目）
-│   └── models
-│       └── Tasks.ts                # タスクモデル
-├── infrastructure                # FrameWork & Dvivers層 (４層目)
-│   ├── MongodbConnection.ts        # MongoDBコネクタの実態
-│   ├── MysqlConnection.ts          # MySQLコネクタの実態
-│   ├── router.ts                   # ExpressのRouter
-│   └── server.ts                   # Express。アプリのエントリーポイントはここ
-└── interfaces                    # Intercace Adapter層（３層目）
-    ├── controllers                 # Controllerの実態
-    │   └── TasksController.ts
-    ├── database                    
-    │   ├── INoSQLDBConnection.ts    # MongoDBコネクタのInterface
-    │   ├── IRDBConnection.ts        # MySQLコネクタのInterface
-    │   ├── NoSQLTaskRepository.ts   # Database操作の実態( NoSQL用 )
-    │   └── RDSTaskRepository.ts     # Database操作の実態( RDS用 )
-    └── serializers
-        └── TaskSerializer.ts
-```
-
-<a id="markdown-素di実装のオブジェクトの生成" name="素di実装のオブジェクトの生成"></a>
-## 素DI実装のオブジェクトの生成
-
-以下のように、オブジェクトの外側で依存オブジェクト作り、引数で依存オブジェクトを渡すのがDIです。
+という構造をとっています。
 
 ```javascript
 // ------------ クラス定義 -----------------
@@ -105,18 +71,32 @@ const task = new Task('掃除する');
 taskController.persist(task);
 ```
 
-利用部分を見ると、`TaskController`を作るために、`Database`を作るというプロセスが確認できます。
+<a id="markdown-diの悩み" name="diの悩み"></a>
+## DIの悩み
 
-これは短いサンプルですが、Clean Architectureのような多層構造において、内部層で使うオブジェクトを作るために関連する(内部依存する）オブジェクトを複数`new`しなければならない状況が見えてきます。
+<a id="markdown-内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち" name="内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち"></a>
+### 内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち
 
-また、外側のクラスで内部で利用するオブジェクトをnewする流れが連鎖するため、必然的に外側のクラス(main関数)にオブジェクト生成のロジックが集まってきます。
+上記サンプルの「利用シーン」を見ると、`TaskController`を`new`するために、前作業として`Database`を`new`しています。
 
-以下、元のClean Architecture実装では、エントリーポイントである`server.ts`にオブジェクト生成のロジックが集中していました。
-本来だと`server.ts`の責務とは無関係の`import`やオブジェクト生成が行われており、違和感を感じます。
+DIを用いると、このような「〇〇オブジェクトを作るためには、〇〇に注入する△△オブジェクトを事前につくる」という作業が頻発します。<br>
+場合によっては、更に△△オブジェクトを作るためには✗✗オブジェクトも必要で。。というように、多段になることもあるでしょう。
+
+これは短いサンプルですが、Clean Architectureのような多層構造においては、内部層にわたすオブジェクトを作るために複数のオブジェクトを順序立てて`new`しなければならない状況が見えてきます。
+
+
+<a id="markdown-オブジェクト生成する場所が不明確になりがち" name="オブジェクト生成する場所が不明確になりがち"></a>
+### オブジェクト生成する場所が不明確になりがち
+
+また、上述のオブジェクト生成を __どこで実装するか？__ という課題もあります。
+
+依存するオブジェクトを外側から渡すという考えを厳守するなら、必然的に外側のクラス(main関数)にオブジェクト生成のロジックが集まってきます。<br>
+サンプルのClean Architecture実装では、エントリーポイントである`server.ts`にオブジェクト生成のロジックが集中させてしていました。
+本来だと`server.ts`ではサーバー起動するためのロジックが書かれているべきですが、内部層で利用するためのオブジェクト生成と、そのための`import`がたくさんかかれており、なかなかの違和感を感じます
+
+_`src/infrastructure/server.ts`_
 
 ```javascript
-# src/infrastructure/server.ts
-
 import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
@@ -166,32 +146,42 @@ app.listen(3000, () => {
 export default app;
 ```
 
+ちなみに、上位層でオブジェクトまるごと生成するのではなく、オブジェクトを利用したい場所で生成すると、
+[Service Locatorアンチパターン](http://blog.a-way-out.net/blog/2015/08/31/your-dependency-injection-is-wrong-as-I-expected/)になります。
 
-<a id="markdown-diコンテナについて" name="diコンテナについて"></a>
-# DIコンテナについて
+端的にいうと、様々なクラスがオブジェクト生成するためのクラス(Service Locator)へ依存するようになり、保守性が下がるというものです。<br>
+やはり、上位層でまるっとオブジェクト生成して下位層に渡すという考え方が必要になります。
 
-DIコンテナは、インスタンスの生成をまるっと任せてしまう仕組みがDIコンテナです。
-上記で見えたような課題、つまり
+<a id="markdown-diコンテナとはなにか" name="diコンテナとはなにか"></a>
+## DIコンテナとはなにか
 
-- 内側のクラスにわたすためのオブジェクトを作る処理が長くなりがち
-- オブジェクト生成する場所が不明確になりがち
+DIコンテナは、上述したような課題を解決するために、
+内部に渡していくオブジェクトの生成や管理をまるごと一括管理するための仕組みです。
 
-というような課題を解決する為に使います。
 内部的には、クラス名などをKey、クラスのコンストラクタをValuesにしたような辞書を保持していて、
 利用側は、クラス名のKeyを渡して必要なオブジェクト生成していくイメージです。
 
-TypeScriptのDIコンテナとして、今回は[InversifyJS](https://github.com/inversify/InversifyJS)を選択しました。
+TypeScriptのDIコンテナとして、今回は[InversifyJS](https://github.com/inversify/InversifyJS)を選択しました
 
-<a id="markdown-inversifyjsについて" name="inversifyjsについて"></a>
-## InversifyJSについて
-
-NodeJSのDIコンテナ実装。[詳細はこちら](https://github.com/inversify/InversifyJS)
+<a id="markdown-inversifyjs" name="inversifyjs"></a>
+### InversifyJS
 
 基本的な使い方としては
+
 - 依存関係が発生する箇所に`@injectable`、`@inject`というデコレータを付与
 - ContainerにDIするクラス群を登録。Container内部に辞書があって、クラスを表すSymbol(文字列やクラスでも可)をKeyに、クラスをValueとして登録するイメージ
 - ContainerにSymbolを渡して、必要なオブジェクトを取得する
 というような流れです。
+
+なお、`InversifyJS` では、下記サンプルの「コンテナ登録」部分を、`inversify.config.ts`に[まとめることを推奨しています。](https://github.com/inversify/InversifyJS#step-3-create-and-configure-a-container)
+
+DIコンテナをつかうことで、
+
+- オブジェクトを`new`する処理が簡単にかける（内部で依存性解決してくれる）
+- オブジェクト生成する場所が一箇所にまとまる（`inversify.config.ts`に集約）
+
+という状況がうまれ、上述のDIの悩みの解消ができそうです。
+
 
 ```javascript
 // ------- クラス定義 -------------------
@@ -234,6 +224,16 @@ myContainer.bind<ThrowableWeapon>(TYPES.ThrowableWeapon).to(Shuriken);
 const ninja = myContainer.get<Warrior>(TYPES.Warrior); // Symbol「TYPES.Warrior」で、Warrior型のオブジェクトを得る
 ```
 
+
+
+<a id="markdown-clean-architecture実装にdiコンテナを導入する" name="clean-architecture実装にdiコンテナを導入する"></a>
+# Clean Architecture実装にDIコンテナを導入する
+
+
+では、ここからサンプルのClean ArchitectureにDIコンテナを導入していきます。
+
+なお、今回の記事の実装内容は[こちらのPR](https://github.com/kazukimuta/try_crean_architecture/pull/1)で纏めて確認できます。
+
 <a id="markdown-diコンテナを導入する" name="diコンテナを導入する"></a>
 ## DIコンテナを導入する
 
@@ -268,13 +268,12 @@ export class NoSQLTaskRepository extends ITaskRepository {
 <a id="markdown-diコンテナにオブジェクトを登録する" name="diコンテナにオブジェクトを登録する"></a>
 ### DIコンテナにオブジェクトを登録する
 
-DIコンテナへの登録は`inversify.config.ts`というファイルで実装する事が[推奨されている](https://github.com/inversify/InversifyJS#step-3-create-and-configure-a-container)ので、そのとおりに実装します。
+DIコンテナへの登録を`inversify.config.ts`に記述します。必然的に、様々なモジュールImportが集まります
 
-ここにDIで渡されるオブジェクト生成のロジックを一同に集めます。
+
+_inversify.config.ts_
 
 ```javascript
-inversify.config.ts
-
 import { Container } from "inversify";
 import "reflect-metadata";
 import Symbols from "./symbols";
@@ -313,9 +312,9 @@ export { container };
 
 もともと`server.ts`で実装していたオブジェクト生成ロジックが、まるごと`inversify.config.ts`に渡されたため、`server.ts`の実装がシンプルになります。
 
-```javascript
-# src/infrastructure/server.ts
+_src/infrastructure/server.ts_
 
+```javascript
 import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
@@ -376,17 +375,6 @@ app.listen(3000, () => {
 });
 export default app;
 ```
-
-
-<a id="markdown-service-locatorアンチパターンについて" name="service-locatorアンチパターンについて"></a>
-## Service Locatorアンチパターンについて
-
-DIコンテナからオブジェクト取得するロジックは、`server.ts`のみで実施していて、各クラスへのオブジェクト分配はDIで上から下に渡すような作りになっています。
-
-ここで、各クラス内でDIコンテナを参照してしまうと、__Service Locaterアンチパターン__ と呼ばれる状態になります。
-様々なクラスがDIコンテナを参照してしまうとDIコンテナへの依存が強まってしまうため、依存オブジェクトは外部から受領するようにして、DIコンテナへの参照は辞めましょうという事です。
-
-ここの実装はやりがちなように思うので、注意が必要です。
 
 
 <a id="markdown-まとめ" name="まとめ"></a>
